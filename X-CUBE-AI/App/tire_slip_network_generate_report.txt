@@ -1,0 +1,189 @@
+ST Edge AI Core v2.1.0-20194 329b0e98d
+Created date          : 2026-01-15 14:13:55
+Parameters            : generate --target stm32h7 --name tire_slip_network -m /Users/aayanmapara/Projects/NondimensionalTractionControl/ModelDevelopment/downloaded_models/slip_ratio_model.tflite --compression none --verbosity 1 --workspace /var/folders/j8/zw9z1mgn5q59d1bq7pqfkhw00000gn/T/mxAI_workspace5365786671483314732375605023882944 --output /Users/aayanmapara/.stm32cubemx/tire_slip_network_output
+
+Exec/report summary (generate)
+----------------------------------------------------------------------------------------------------------------------------------------------
+model file         :   /Users/aayanmapara/Projects/NondimensionalTractionControl/ModelDevelopment/downloaded_models/slip_ratio_model.tflite   
+type               :   tflite                                                                                                                 
+c_name             :   tire_slip_network                                                                                                      
+compression        :   none                                                                                                                   
+options            :   allocate-inputs, allocate-outputs                                                                                      
+optimization       :   balanced                                                                                                               
+target/series      :   stm32h7                                                                                                                
+workspace dir      :   /var/folders/j8/zw9z1mgn5q59d1bq7pqfkhw00000gn/T/mxAI_workspace5365786671483314732375605023882944                      
+output dir         :   /Users/aayanmapara/.stm32cubemx/tire_slip_network_output                                                               
+model_fmt          :   float                                                                                                                  
+model_name         :   slip_ratio_model                                                                                                       
+model_hash         :   0x110012351dec3cb333ca71e416f89b5f                                                                                     
+params #           :   481 items (1.88 KiB)                                                                                                   
+----------------------------------------------------------------------------------------------------------------------------------------------
+input 1/1          :   'serving_default_keras_tensor0', f32(1x6), 24 Bytes, activations                                                       
+output 1/1         :   'gemm_4', f32(1x1), 4 Bytes, activations                                                                               
+macc               :   841                                                                                                                    
+weights (ro)       :   1,924 B (1.88 KiB) (1 segment)                                                                                         
+activations (rw)   :   144 B (144 B) (1 segment) *                                                                                            
+ram (total)        :   144 B (144 B) = 144 + 0 + 0                                                                                            
+----------------------------------------------------------------------------------------------------------------------------------------------
+(*) 'input'/'output' buffers can be used from the activations buffer
+
+Model name - slip_ratio_model
+------ ------------------------------------------------ ------------- ------------ ------ -------------------------------- --- --------------- --------------- ------------------ 
+m_id   layer (type,original)                            oshape        param/size     macc                     connected to   | c_size          c_macc          c_type             
+------ ------------------------------------------------ ------------- ------------ ------ -------------------------------- --- --------------- --------------- ------------------ 
+0      serving_default_keras_tensor0 (Input, )          [b:1,c:6]                                                            | +672(+100.0%)   +168(+100.0%)   Dense_[0]          
+       sequential_1_batch..norm_mul_1 (Placeholder, )   [b:24,c:6]    144/576                                                | -576(-100.0%)                   
+       sequential_1_batch..norm_add_1 (Placeholder, )   [b:24]        24/96                                                  | -96(-100.0%)                    
+       gemm_0 (Gemm, FULLY_CONNECTED)                   [b:1,c:24]                    168    serving_default_keras_tensor0   |                 -168(-100.0%)   
+                                                                                            sequential_1_batch..norm_mul_1   | 
+                                                                                            sequential_1_batch..norm_add_1   | 
+------ ------------------------------------------------ ------------- ------------ ------ -------------------------------- --- --------------- --------------- ------------------ 
+1      nl_1 (Nonlinearity, LOGISTIC)                    [b:1,c:24]                    240                           gemm_0   |                                 Nonlinearity_[1]   
+------ ------------------------------------------------ ------------- ------------ ------ -------------------------------- --- --------------- --------------- ------------------ 
+2      arith_constant1 (Placeholder, )                  [b:12,c:24]   288/1,152                                              | +48(+4.2%)      +300(+100.0%)   Dense_[2]          
+       arith_constant (Placeholder, )                   [b:12]        12/48                                                  | -48(-100.0%)                    
+       gemm_2 (Gemm, FULLY_CONNECTED)                   [b:1,c:12]                    300                             nl_1   |                 -300(-100.0%)   
+                                                                                                           arith_constant1   | 
+                                                                                                            arith_constant   | 
+------ ------------------------------------------------ ------------- ------------ ------ -------------------------------- --- --------------- --------------- ------------------ 
+3      nl_3 (Nonlinearity, LOGISTIC)                    [b:1,c:12]                    120                           gemm_2   |                                 Nonlinearity_[3]   
+------ ------------------------------------------------ ------------- ------------ ------ -------------------------------- --- --------------- --------------- ------------------ 
+4      arith_constant2 (Placeholder, )                  [b:1,c:12]    12/48                                                  | +4(+8.3%)       +13(+100.0%)    Dense_[o][4]       
+       arith_constant3 (Placeholder, )                  [b:1]         1/4                                                    | -4(-100.0%)                     
+       gemm_4 (Gemm, FULLY_CONNECTED)                   [b:1,c:1]                      13                             nl_3   |                 -13(-100.0%)    
+                                                                                                           arith_constant2   | 
+                                                                                                           arith_constant3   | 
+------ ------------------------------------------------ ------------- ------------ ------ -------------------------------- --- --------------- --------------- ------------------ 
+model/c-model: macc=841/841  weights=1,924/1,924  activations=--/144 io=--/0
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : slip_ratio_model
+c-name                : tire_slip_network
+c-node #              : 5
+c-array #             : 12
+activations size      : 144 (1 segment)
+weights size          : 1924 (1 segment)
+macc                  : 841
+inputs                : ['serving_default_keras_tensor0_output']
+outputs               : ['gemm_4_output']
+
+C-Arrays (12)
+------ -------------------------------------- ----------- ------------------------- ------------- --------- 
+c_id   name (*_array)                         item/size   domain/mem-pool           c-type        comment   
+------ -------------------------------------- ----------- ------------------------- ------------- --------- 
+0      gemm_0_bias                            24/96       weights/weights           const float             
+1      gemm_0_output                          24/96       activations/**default**   float                   
+2      gemm_0_weights                         144/576     weights/weights           const float             
+3      gemm_2_bias                            12/48       weights/weights           const float             
+4      gemm_2_output                          12/48       activations/**default**   float                   
+5      gemm_2_weights                         288/1152    weights/weights           const float             
+6      gemm_4_bias                            1/4         weights/weights           const float             
+7      gemm_4_output                          1/4         activations/**default**   float         /output   
+8      gemm_4_weights                         12/48       weights/weights           const float             
+9      nl_1_output                            24/96       activations/**default**   float                   
+10     nl_3_output                            12/48       activations/**default**   float                   
+11     serving_default_keras_tensor0_output   6/24        activations/**default**   float         /input    
+------ -------------------------------------- ----------- ------------------------- ------------- --------- 
+
+C-Layers (5)
+------ ---------------- ---- --------------- ------ ------ ----------------------------------------- ------------------ 
+c_id   name (*_layer)   id   layer_type      macc   rom    tensors                                   shape (array id)   
+------ ---------------- ---- --------------- ------ ------ ----------------------------------------- ------------------ 
+0      gemm_0           0    Dense           168    672    I: serving_default_keras_tensor0_output   f32(1x6) (11)      
+                                                           W: gemm_0_weights                         f32(24x6) (2)      
+                                                           W: gemm_0_bias                            f32(24) (0)        
+                                                           O: gemm_0_output                          f32(1x24) (1)      
+------ ---------------- ---- --------------- ------ ------ ----------------------------------------- ------------------ 
+1      nl_1             1    Nonlinearity    240    0      I: gemm_0_output                          f32(1x24) (1)      
+                                                           O: nl_1_output                            f32(1x24) (9)      
+------ ---------------- ---- --------------- ------ ------ ----------------------------------------- ------------------ 
+2      gemm_2           2    Dense           300    1200   I: nl_1_output                            f32(1x24) (9)      
+                                                           W: gemm_2_weights                         f32(12x24) (5)     
+                                                           W: gemm_2_bias                            f32(12) (3)        
+                                                           O: gemm_2_output                          f32(1x12) (4)      
+------ ---------------- ---- --------------- ------ ------ ----------------------------------------- ------------------ 
+3      nl_3             3    Nonlinearity    120    0      I: gemm_2_output                          f32(1x12) (4)      
+                                                           O: nl_3_output                            f32(1x12) (10)     
+------ ---------------- ---- --------------- ------ ------ ----------------------------------------- ------------------ 
+4      gemm_4           4    Dense           13     52     I: nl_3_output                            f32(1x12) (10)     
+                                                           W: gemm_4_weights                         f32(1x12) (8)      
+                                                           W: gemm_4_bias                            f32(1) (6)         
+                                                           O: gemm_4_output                          f32(1x1) (7)       
+------ ---------------- ---- --------------- ------ ------ ----------------------------------------- ------------------ 
+
+
+
+Number of operations per c-layer
+------- ------ --------------------- ----- -------------- 
+c_id    m_id   name (type)             #op           type 
+------- ------ --------------------- ----- -------------- 
+0       0      gemm_0 (Dense)          168   smul_f32_f32 
+1       1      nl_1 (Nonlinearity)     240     op_f32_f32 
+2       2      gemm_2 (Dense)          300   smul_f32_f32 
+3       3      nl_3 (Nonlinearity)     120     op_f32_f32 
+4       4      gemm_4 (Dense)           13   smul_f32_f32 
+------- ------ --------------------- ----- -------------- 
+total                                  841 
+
+Number of operation types
+---------------- ----- ----------- 
+operation type       #           % 
+---------------- ----- ----------- 
+smul_f32_f32       481       57.2% 
+op_f32_f32         360       42.8% 
+
+Complexity report (model)
+------ ------------------------------- ------------------------- ------------------------- ------ 
+m_id   name                            c_macc                    c_rom                     c_id   
+------ ------------------------------- ------------------------- ------------------------- ------ 
+0      serving_default_keras_tensor0   |||||||||         20.0%   |||||||||         34.9%   [0]    
+1      nl_1                            |||||||||||||     28.5%   |                  0.0%   [1]    
+2      arith_constant1                 ||||||||||||||||  35.7%   ||||||||||||||||  62.4%   [2]    
+3      nl_3                            |||||||           14.3%   |                  0.0%   [3]    
+4      arith_constant2                 |                  1.5%   |                  2.7%   [4]    
+------ ------------------------------- ------------------------- ------------------------- ------ 
+macc=841 weights=1,924 act=144 ram_io=0
+ 
+ Requested memory size by section - "stm32h7" target
+ ------------------------------ ------- -------- ------- ----- 
+ module                            text   rodata    data   bss 
+ ------------------------------ ------- -------- ------- ----- 
+ NetworkRuntime1010_CM7_GCC.a     6,884        0       0     0 
+ tire_slip_network.o                528       40   1,584   140 
+ tire_slip_network_data.o            48       16      88     0 
+ lib (toolchain)*                   318      328       0     0 
+ ------------------------------ ------- -------- ------- ----- 
+ RT total**                       7,778      384   1,672   140 
+ ------------------------------ ------- -------- ------- ----- 
+ weights                              0    1,928       0     0 
+ activations                          0        0       0   144 
+ io                                   0        0       0     0 
+ ------------------------------ ------- -------- ------- ----- 
+ TOTAL                            7,778    2,312   1,672   284 
+ ------------------------------ ------- -------- ------- ----- 
+ *  toolchain objects (libm/libgcc*)
+ ** RT AI runtime objects (kernels+infrastructure)
+  
+  Summary - "stm32h7" target
+  ---------------------------------------------------
+               FLASH (ro)      %*   RAM (rw)       % 
+  ---------------------------------------------------
+  RT total          9,834   83.6%      1,812   92.6% 
+  ---------------------------------------------------
+  TOTAL            11,762              1,956         
+  ---------------------------------------------------
+  *  rt/total
+
+
+Generated files (7)
+------------------------------------------------------------------------------------------ 
+/Users/aayanmapara/.stm32cubemx/tire_slip_network_output/tire_slip_network_data_params.h   
+/Users/aayanmapara/.stm32cubemx/tire_slip_network_output/tire_slip_network_data_params.c   
+/Users/aayanmapara/.stm32cubemx/tire_slip_network_output/tire_slip_network_data.h          
+/Users/aayanmapara/.stm32cubemx/tire_slip_network_output/tire_slip_network_data.c          
+/Users/aayanmapara/.stm32cubemx/tire_slip_network_output/tire_slip_network_config.h        
+/Users/aayanmapara/.stm32cubemx/tire_slip_network_output/tire_slip_network.h               
+/Users/aayanmapara/.stm32cubemx/tire_slip_network_output/tire_slip_network.c               
