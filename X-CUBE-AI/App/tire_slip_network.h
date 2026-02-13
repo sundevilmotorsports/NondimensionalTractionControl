@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    tire_slip_network.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    2026-01-15T14:13:54-0700
+  * @date    2026-01-15T19:19:35-0700
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -23,7 +23,7 @@
 
 /******************************************************************************/
 #define AI_TIRE_SLIP_NETWORK_MODEL_NAME          "tire_slip_network"
-#define AI_TIRE_SLIP_NETWORK_ORIGIN_MODEL_NAME   "slip_ratio_model"
+#define AI_TIRE_SLIP_NETWORK_ORIGIN_MODEL_NAME   "model2"
 
 /******************************************************************************/
 #define AI_TIRE_SLIP_NETWORK_ACTIVATIONS_ALIGNMENT   (4)
@@ -44,9 +44,9 @@ AI_DEPRECATED
   AI_TIRE_SLIP_NETWORK_IN_1_SIZE_BYTES, \
 }
 #define AI_TIRE_SLIP_NETWORK_IN_1_FORMAT      (AI_BUFFER_FORMAT_FLOAT)
-#define AI_TIRE_SLIP_NETWORK_IN_1_CHANNEL     (6)
-#define AI_TIRE_SLIP_NETWORK_IN_1_SIZE        (6)
-#define AI_TIRE_SLIP_NETWORK_IN_1_SIZE_BYTES  (24)
+#define AI_TIRE_SLIP_NETWORK_IN_1_CHANNEL     (5)
+#define AI_TIRE_SLIP_NETWORK_IN_1_SIZE        (5)
+#define AI_TIRE_SLIP_NETWORK_IN_1_SIZE_BYTES  (20)
 
 /******************************************************************************/
 #define AI_TIRE_SLIP_NETWORK_OUT_NUM       (1)

@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    tire_slip_network_data.c
   * @author  AST Embedded Analytics Research Platform
-  * @date    2026-01-15T14:13:54-0700
+  * @date    2026-01-15T19:19:35-0700
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -26,8 +26,8 @@ ai_buffer g_tire_slip_network_data_map_activations[AI_TIRE_SLIP_NETWORK_DATA_ACT
   };
 ai_buffer g_tire_slip_network_data_map_weights[AI_TIRE_SLIP_NETWORK_DATA_WEIGHTS_COUNT] = {
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 1924, 1, 1),
-    1924, NULL, s_tire_slip_network_weights_array_u64),   /* weights_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 1828, 1, 1),
+    1828, NULL, s_tire_slip_network_weights_array_u64),   /* weights_array */
   };
 
 

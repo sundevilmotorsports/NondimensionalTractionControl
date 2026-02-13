@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    tire_slip_network_data.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    2026-01-15T14:13:54-0700
+  * @date    2026-01-15T19:19:35-0700
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * Copyright (c) 2026 STMicroelectronics.
@@ -32,7 +32,7 @@ AI_DEPRECATED
 AI_API_DECLARE_BEGIN
 
 
-extern const ai_u64 s_tire_slip_network_weights_array_u64[241];
+extern const ai_u64 s_tire_slip_network_weights_array_u64[229];
 
 
 
