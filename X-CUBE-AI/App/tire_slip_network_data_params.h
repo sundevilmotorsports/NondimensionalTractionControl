@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    tire_slip_network_data_params.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    2026-01-15T14:13:54-0700
+  * @date    2026-01-15T19:19:35-0700
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * Copyright (c) 2026 STMicroelectronics.
@@ -36,10 +36,10 @@
 
 
 #define AI_TIRE_SLIP_NETWORK_DATA_WEIGHTS_SIZES \
-  { 1924, }
-#define AI_TIRE_SLIP_NETWORK_DATA_WEIGHTS_SIZE         (1924)
+  { 1828, }
+#define AI_TIRE_SLIP_NETWORK_DATA_WEIGHTS_SIZE         (1828)
 #define AI_TIRE_SLIP_NETWORK_DATA_WEIGHTS_COUNT        (1)
-#define AI_TIRE_SLIP_NETWORK_DATA_WEIGHT_1_SIZE        (1924)
+#define AI_TIRE_SLIP_NETWORK_DATA_WEIGHT_1_SIZE        (1828)
 
 
 

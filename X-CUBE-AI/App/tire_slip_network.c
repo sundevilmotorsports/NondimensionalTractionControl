@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    tire_slip_network.c
   * @author  AST Embedded Analytics Research Platform
-  * @date    2026-01-15T14:13:54-0700
+  * @date    2026-01-15T19:19:35-0700
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -35,14 +35,14 @@
 #define AI_NET_OBJ_INSTANCE g_tire_slip_network
  
 #undef AI_TIRE_SLIP_NETWORK_MODEL_SIGNATURE
-#define AI_TIRE_SLIP_NETWORK_MODEL_SIGNATURE     "0x110012351dec3cb333ca71e416f89b5f"
+#define AI_TIRE_SLIP_NETWORK_MODEL_SIGNATURE     "0x80693b587880769a996c0a173557d50f"
 
 #ifndef AI_TOOLS_REVISION_ID
 #define AI_TOOLS_REVISION_ID     ""
 #endif
 
 #undef AI_TOOLS_DATE_TIME
-#define AI_TOOLS_DATE_TIME   "2026-01-15T14:13:54-0700"
+#define AI_TOOLS_DATE_TIME   "2026-01-15T19:19:35-0700"
 
 #undef AI_TOOLS_COMPILE_TIME
 #define AI_TOOLS_COMPILE_TIME    __DATE__ " " __TIME__
@@ -58,8 +58,8 @@ static ai_ptr g_tire_slip_network_weights_map[1] = AI_C_ARRAY_INIT;
 /**  Array declarations section  **********************************************/
 /* Array#0 */
 AI_ARRAY_OBJ_DECLARE(
-  serving_default_keras_tensor0_output_array, AI_ARRAY_FORMAT_FLOAT|AI_FMT_FLAG_IS_IO,
-  NULL, NULL, 6, AI_STATIC)
+  serving_default_keras_tensor_160_output_array, AI_ARRAY_FORMAT_FLOAT|AI_FMT_FLAG_IS_IO,
+  NULL, NULL, 5, AI_STATIC)
 
 /* Array#1 */
 AI_ARRAY_OBJ_DECLARE(
@@ -89,7 +89,7 @@ AI_ARRAY_OBJ_DECLARE(
 /* Array#6 */
 AI_ARRAY_OBJ_DECLARE(
   gemm_0_weights_array, AI_ARRAY_FORMAT_FLOAT,
-  NULL, NULL, 144, AI_STATIC)
+  NULL, NULL, 120, AI_STATIC)
 
 /* Array#7 */
 AI_ARRAY_OBJ_DECLARE(
@@ -135,7 +135,7 @@ AI_TENSOR_OBJ_DECLARE(
 AI_TENSOR_OBJ_DECLARE(
   gemm_0_weights, AI_STATIC,
   2, 0x0,
-  AI_SHAPE_INIT(4, 6, 24, 1, 1), AI_STRIDE_INIT(4, 4, 24, 576, 576),
+  AI_SHAPE_INIT(4, 5, 24, 1, 1), AI_STRIDE_INIT(4, 4, 20, 480, 480),
   1, &gemm_0_weights_array, NULL)
 
 /* Tensor #3 */
@@ -196,10 +196,10 @@ AI_TENSOR_OBJ_DECLARE(
 
 /* Tensor #11 */
 AI_TENSOR_OBJ_DECLARE(
-  serving_default_keras_tensor0_output, AI_STATIC,
+  serving_default_keras_tensor_160_output, AI_STATIC,
   11, 0x0,
-  AI_SHAPE_INIT(4, 1, 6, 1, 1), AI_STRIDE_INIT(4, 4, 4, 24, 24),
-  1, &serving_default_keras_tensor0_output_array, NULL)
+  AI_SHAPE_INIT(4, 1, 5, 1, 1), AI_STRIDE_INIT(4, 4, 4, 20, 20),
+  1, &serving_default_keras_tensor_160_output_array, NULL)
 
 
 
@@ -274,7 +274,7 @@ AI_LAYER_OBJ_DECLARE(
 
 AI_TENSOR_CHAIN_OBJ_DECLARE(
   gemm_0_chain, AI_STATIC_CONST, 4,
-  AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &serving_default_keras_tensor0_output),
+  AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &serving_default_keras_tensor_160_output),
   AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &gemm_0_output),
   AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 2, &gemm_0_weights, &gemm_0_bias),
   AI_TENSOR_LIST_OBJ_EMPTY
@@ -294,14 +294,14 @@ AI_LAYER_OBJ_DECLARE(
 AI_NETWORK_OBJ_DECLARE(
   AI_NET_OBJ_INSTANCE, AI_STATIC,
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 1924, 1, 1),
-    1924, NULL, NULL),
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 1828, 1, 1),
+    1828, NULL, NULL),
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
     AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 144, 1, 1),
     144, NULL, NULL),
-  AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_TIRE_SLIP_NETWORK_IN_NUM, &serving_default_keras_tensor0_output),
+  AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_TIRE_SLIP_NETWORK_IN_NUM, &serving_default_keras_tensor_160_output),
   AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_TIRE_SLIP_NETWORK_OUT_NUM, &gemm_4_output),
-  &gemm_0_layer, 0x4537a8f8, NULL)
+  &gemm_0_layer, 0x9e6fb002, NULL)
 
 #else
 
@@ -310,8 +310,8 @@ AI_NETWORK_OBJ_DECLARE(
   AI_BUFFER_ARRAY_OBJ_INIT_STATIC(
   	AI_FLAG_NONE, 1,
     AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-      AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 1924, 1, 1),
-      1924, NULL, NULL)
+      AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 1828, 1, 1),
+      1828, NULL, NULL)
   ),
   AI_BUFFER_ARRAY_OBJ_INIT_STATIC(
   	AI_FLAG_NONE, 1,
@@ -319,9 +319,9 @@ AI_NETWORK_OBJ_DECLARE(
       AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 144, 1, 1),
       144, NULL, NULL)
   ),
-  AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_TIRE_SLIP_NETWORK_IN_NUM, &serving_default_keras_tensor0_output),
+  AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_TIRE_SLIP_NETWORK_IN_NUM, &serving_default_keras_tensor_160_output),
   AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_TIRE_SLIP_NETWORK_OUT_NUM, &gemm_4_output),
-  &gemm_0_layer, 0x4537a8f8, NULL)
+  &gemm_0_layer, 0x9e6fb002, NULL)
 
 #endif	/*(AI_TOOLS_API_VERSION < AI_TOOLS_API_VERSION_1_5)*/
 
@@ -337,8 +337,8 @@ ai_bool tire_slip_network_configure_activations(
   if (ai_platform_get_activations_map(g_tire_slip_network_activations_map, 1, params)) {
     /* Updating activations (byte) offsets */
     
-    serving_default_keras_tensor0_output_array.data = AI_PTR(g_tire_slip_network_activations_map[0] + 24);
-    serving_default_keras_tensor0_output_array.data_start = AI_PTR(g_tire_slip_network_activations_map[0] + 24);
+    serving_default_keras_tensor_160_output_array.data = AI_PTR(g_tire_slip_network_activations_map[0] + 28);
+    serving_default_keras_tensor_160_output_array.data_start = AI_PTR(g_tire_slip_network_activations_map[0] + 28);
     gemm_0_output_array.data = AI_PTR(g_tire_slip_network_activations_map[0] + 48);
     gemm_0_output_array.data_start = AI_PTR(g_tire_slip_network_activations_map[0] + 48);
     nl_1_output_array.data = AI_PTR(g_tire_slip_network_activations_map[0] + 48);
@@ -372,20 +372,20 @@ ai_bool tire_slip_network_configure_weights(
     gemm_0_weights_array.data = AI_PTR(g_tire_slip_network_weights_map[0] + 0);
     gemm_0_weights_array.data_start = AI_PTR(g_tire_slip_network_weights_map[0] + 0);
     gemm_0_bias_array.format |= AI_FMT_FLAG_CONST;
-    gemm_0_bias_array.data = AI_PTR(g_tire_slip_network_weights_map[0] + 576);
-    gemm_0_bias_array.data_start = AI_PTR(g_tire_slip_network_weights_map[0] + 576);
+    gemm_0_bias_array.data = AI_PTR(g_tire_slip_network_weights_map[0] + 480);
+    gemm_0_bias_array.data_start = AI_PTR(g_tire_slip_network_weights_map[0] + 480);
     gemm_2_weights_array.format |= AI_FMT_FLAG_CONST;
-    gemm_2_weights_array.data = AI_PTR(g_tire_slip_network_weights_map[0] + 672);
-    gemm_2_weights_array.data_start = AI_PTR(g_tire_slip_network_weights_map[0] + 672);
+    gemm_2_weights_array.data = AI_PTR(g_tire_slip_network_weights_map[0] + 576);
+    gemm_2_weights_array.data_start = AI_PTR(g_tire_slip_network_weights_map[0] + 576);
     gemm_2_bias_array.format |= AI_FMT_FLAG_CONST;
-    gemm_2_bias_array.data = AI_PTR(g_tire_slip_network_weights_map[0] + 1824);
-    gemm_2_bias_array.data_start = AI_PTR(g_tire_slip_network_weights_map[0] + 1824);
+    gemm_2_bias_array.data = AI_PTR(g_tire_slip_network_weights_map[0] + 1728);
+    gemm_2_bias_array.data_start = AI_PTR(g_tire_slip_network_weights_map[0] + 1728);
     gemm_4_weights_array.format |= AI_FMT_FLAG_CONST;
-    gemm_4_weights_array.data = AI_PTR(g_tire_slip_network_weights_map[0] + 1872);
-    gemm_4_weights_array.data_start = AI_PTR(g_tire_slip_network_weights_map[0] + 1872);
+    gemm_4_weights_array.data = AI_PTR(g_tire_slip_network_weights_map[0] + 1776);
+    gemm_4_weights_array.data_start = AI_PTR(g_tire_slip_network_weights_map[0] + 1776);
     gemm_4_bias_array.format |= AI_FMT_FLAG_CONST;
-    gemm_4_bias_array.data = AI_PTR(g_tire_slip_network_weights_map[0] + 1920);
-    gemm_4_bias_array.data_start = AI_PTR(g_tire_slip_network_weights_map[0] + 1920);
+    gemm_4_bias_array.data = AI_PTR(g_tire_slip_network_weights_map[0] + 1824);
+    gemm_4_bias_array.data_start = AI_PTR(g_tire_slip_network_weights_map[0] + 1824);
     return true;
   }
   AI_ERROR_TRAP(net_ctx, INIT_FAILED, NETWORK_WEIGHTS);
@@ -424,7 +424,7 @@ ai_bool ai_tire_slip_network_get_info(
       .api_version            = ai_platform_api_get_version(),
       .interface_api_version  = ai_platform_interface_api_get_version(),
       
-      .n_macc            = 841,
+      .n_macc            = 817,
       .n_inputs          = 0,
       .inputs            = NULL,
       .n_outputs         = 0,
@@ -432,7 +432,7 @@ ai_bool ai_tire_slip_network_get_info(
       .params            = AI_STRUCT_INIT,
       .activations       = AI_STRUCT_INIT,
       .n_nodes           = 0,
-      .signature         = 0x4537a8f8,
+      .signature         = 0x9e6fb002,
     };
 
     if (!ai_platform_api_get_network_report(network, &r)) return false;
@@ -471,7 +471,7 @@ ai_bool ai_tire_slip_network_get_report(
       .api_version            = ai_platform_api_get_version(),
       .interface_api_version  = ai_platform_interface_api_get_version(),
       
-      .n_macc            = 841,
+      .n_macc            = 817,
       .n_inputs          = 0,
       .inputs            = NULL,
       .n_outputs         = 0,
@@ -480,7 +480,7 @@ ai_bool ai_tire_slip_network_get_report(
       .map_weights       = AI_STRUCT_INIT,
       .map_activations   = AI_STRUCT_INIT,
       .n_nodes           = 0,
-      .signature         = 0x4537a8f8,
+      .signature         = 0x9e6fb002,
     };
 
     if (!ai_platform_api_get_network_report(network, &r)) return false;

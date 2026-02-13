@@ -21,7 +21,8 @@
 #include "cmsis_os.h"
 #include "fatfs.h"
 #include "usb_device.h"
-
+#include "tire_slip_network.h"
+#include "tire_slip_network_data.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -63,7 +64,17 @@ const osThreadAttr_t defaultTask_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
+static ai_handle tire_slip_network = AI_HANDLE_NULL;
+static ai_u8 activations[AI_TIRE_SLIP_NETWORK_DATA_ACTIVATIONS_SIZE];
 
+static ai_float in_data[AI_TIRE_SLIP_NETWORK_IN_1_SIZE];
+static ai_float out_data[AI_TIRE_SLIP_NETWORK_OUT_1_SIZE];
+
+static ai_buffer ai_input[AI_TIRE_SLIP_NETWORK_IN_NUM] = AI_TIRE_SLIP_NETWORK_IN_1_SET_VIC(in_data);
+static ai_buffer ai_output[AI_TIRE_SLIP_NETWORK_OUT_NUM] = AI_TIRE_SLIP_NETWORK_OUT_1_SET_VIC(out_data);
+
+float SCALER_MEAN[5] = {19.630303697626477, -0.0005450365189715463, 59.8901043966616, 120.48587937144882, 59.00885398270266};
+float SCALER_SCALE[5] = {8.66180044582203, 0.14460143717972843, 23.107923307685642, 57.82262435123635, 84.05533340078773};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -135,6 +146,7 @@ int main(void)
   MX_DAC1_Init();
   MX_FDCAN2_Init();
   /* USER CODE BEGIN 2 */
+
 
   /* USER CODE END 2 */
 
