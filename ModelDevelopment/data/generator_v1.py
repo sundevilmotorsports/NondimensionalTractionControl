@@ -2,13 +2,13 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# --- CONSTANTS ---
+# CONSTANTS
 TIRE_RADIUS = 0.2032       
 MASS_CAR = 250.0           
 AERO_DOWNFORCE_COEFF = 1.5 
 WHEEL_INERTIA = 0.8        
 
-# --- PACEJKA PHYSICS (The Truth) ---
+# PACEJKA PHYSICS
 PAC_D_BASE = 1.6   
 PAC_C = 1.5
 PAC_B = 10.0
@@ -33,7 +33,6 @@ def calculate_magic_formula(slip, Fz, temp, steer):
     return road_torque, mu_peak
 
 def generate_mixed_dataset(total_samples=50000):
-    print(f"Generating {total_samples} samples (50% Clean / 50% Noisy)...")
     data = []
     
     for i in range(total_samples):
@@ -65,8 +64,8 @@ def generate_mixed_dataset(total_samples=50000):
         net_torque = (road_torque + driver_excess) - road_torque
         alpha_true = net_torque / WHEEL_INERTIA
 
-        # --- 2. THE SPLIT (Clean vs. Noisy) ---
-        is_noisy = i > (total_samples / 1.5) # First half clean, second half noisy
+        # Generate noisy data to account for actual sensor noise
+        is_noisy = i > (total_samples / 1.5) # 1/3 noisy data
         
         if is_noisy:
             # Apply Sensor Noise
@@ -90,7 +89,6 @@ def generate_mixed_dataset(total_samples=50000):
             w_input = w_true
             alpha_input = alpha_true
 
-        # --- 3. SAVE ---
         data.append({
             'vehicle_speed': v_input,
             'steering_angle': steer_input,
@@ -103,16 +101,13 @@ def generate_mixed_dataset(total_samples=50000):
         
     return pd.DataFrame(data)
 
-# --- EXECUTE ---
 df_mixed = generate_mixed_dataset(50000)
 
 # Verify the mix
-print("\nDataset Composition:")
 print(df_mixed['is_noisy'].value_counts())
 
 # Save
-df_mixed.to_csv("synthetic_dataset.csv", index=False)
-print("Saved 'fsae_mixed_dataset.csv'")
+df_mixed.to_csv("synthetic_dataset_test.csv", index=False)
 
 # Visualize the difference
 plt.figure(figsize=(10, 6))
