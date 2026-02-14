@@ -55,4 +55,4 @@ dkms.conf
 *.dwo
 
 # datasets
-ModelDevelopment/*.csv
+ModelDevelopment/data/*.csv
