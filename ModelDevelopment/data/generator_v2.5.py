@@ -17,7 +17,6 @@ CONSTANTS = {
     'peak_slip_angle': 0.12,
     'base_friction': 1.6,
     'drivetrain_damping': 0.8,
-    # Tire thermal model (tuned for FSAE: optimal grip 82-93°C)
     'tire_heat_coeff': 0.002,         # friction -> heat conversion (FSAE compound)
     'tire_cool_coeff': 0.000065,        # convective cooling rate
     'tire_temp_max': 130.0,            # deg C max
@@ -35,28 +34,28 @@ def get_driver_input(t, current_slip, target_slip, aggression):
     base_tps = 0.0
     run_bias = np.random.normal(0.0, 0.02)
 
-    # launch - high throttle
-    if phase < 3.0:
-        base_tps = 0.75 + aggression * 0.20  # 0.75 (cautious) to 0.95 (aggressive)
-        kp = base_kp * 0.4  # weaker feedback during launch (let slip build)
+    # launch - high throttle (0-2s)
+    if phase < 2.0:
+        base_tps = 0.75 + aggression * 0.20
+        kp = base_kp * 0.4
         if np.random.rand() < 0.05 + aggression * 0.08:
             base_tps = np.clip(base_tps + np.random.uniform(0.05, 0.15), 0, 1)
 
-    # technical corners - oscillating throttle to maintain 10-15% slip (ideal grip)
-    elif phase < 10.0:
-        base_tps = 0.40 + 0.35 * np.sin(t * 6.0) + aggression * 0.10
+    # technical corners - oscillating throttle at mid-slip (2-11s)
+    elif phase < 11.0:
+        base_tps = 0.48 + 0.35 * np.sin(t * 6.0) + aggression * 0.10
         kp = base_kp
         if np.random.rand() < 0.40 + aggression * 0.10:
             base_tps = np.clip(base_tps + np.random.uniform(0.08, 0.18), 0, 1)
 
-    # short straight - to get more data in the 15-25% range
-    elif phase < 12.0:
+    # short straight (11-13s)
+    elif phase < 13.0:
         base_tps = 0.75 + aggression * 0.15
         kp = base_kp * 1.2
         if np.random.rand() < 0.20 + aggression * 0.10:
             base_tps = np.clip(base_tps + np.random.uniform(0.05, 0.15), 0, 1)
 
-    # coast / recovery for low slip samples
+    # coast / recovery for low slip samples (13-15s)
     else:
         base_tps = 0.0
         kp = 0.0
@@ -72,20 +71,12 @@ def get_driver_input(t, current_slip, target_slip, aggression):
         final_tps = np.clip(final_tps + burst_strength, 0.0, 1.0)
 
     # launch boost
-    if phase < 3.0 and np.random.rand() < 0.02 + aggression * 0.04:
+    if phase < 2.0 and np.random.rand() < 0.02 + aggression * 0.04:
         final_tps = np.clip(final_tps + np.random.uniform(0.10, 0.25), 0.0, 1.0)
 
-    # hold/assist for near-threshold slips: nudge into 10-15% band
-    if 0.04 <= current_slip <= 0.14 and np.random.rand() < 0.85:
-        final_tps = np.clip(final_tps + np.random.uniform(0.04, 0.12), 0.0, 1.0)
-
-    # extra assist to push 8-12% up into the 10-15% target
-    if 0.08 <= current_slip <= 0.12 and np.random.rand() < 0.60:
-        final_tps = np.clip(final_tps + np.random.uniform(0.02, 0.06), 0.0, 1.0)
-
-    # progressive throttle reduction above optimal slip (steeper to reduce 15-25% population)
+    # progressive throttle reduction above optimal slip
     if current_slip > 0.15:
-        scale = max(0.1, 1.0 - (current_slip - 0.15) * 3.0)
+        scale = max(0.15, 1.0 - (current_slip - 0.15) * 2.2)
         final_tps *= scale
 
     # high slip trim (aggressive drivers cut back less)
@@ -102,9 +93,7 @@ def get_driver_input(t, current_slip, target_slip, aggression):
     return final_tps, steer
 
 
-# ============================================================
-# NORMAL LOAD (with longitudinal weight transfer)
-# ============================================================
+# calculates normal load based on mass, cg_height and wheel base
 def calculate_normal_load(ax, const):
     static_weight = (const['mass'] * 9.81) / 2
     transfer = (const['mass'] * ax * const['cg_height']) / const['wheelbase']
@@ -112,18 +101,21 @@ def calculate_normal_load(ax, const):
     return max(normal_load, 50.0)
 
 
-# ============================================================
-# PACEJKA MAGIC FORMULA (with post-peak grip drop-off)
-# ============================================================
+# pacejka magic formula for distribution
 def magic_formula(slip, load, steer_angle, peak_slip, current_mu):
     """
     Simplified Pacejka with:
       - Steering penalty
       - Post-peak grip drop-off (falling friction regime)
     """
+
+    # steer penalty - models grip loss when increased steering
     steer_penalty = max(0.6, 1.0 - abs(steer_angle) * 1.0)
+
+    # mu_peak
     mu_peak = current_mu * steer_penalty
 
+    # )
     abs_slip = abs(slip)
 
     if abs_slip < peak_slip:
@@ -139,28 +131,19 @@ def magic_formula(slip, load, steer_angle, peak_slip, current_mu):
     return force
 
 
-# ============================================================
-# TIRE TEMPERATURE MODEL
-# ============================================================
+# tire temp model for dynamic + realistic tire temps that affect grip
 def update_tire_temp(temp, fx, slip, vx, ambient, const):
-    """
-    Simple thermal model:
-      - Heat generated from tire slip friction (|Fx * slip|)
-      - Convective cooling proportional to speed and delta-T
-    """
-    heat_gen = abs(fx * slip) * const['tire_heat_coeff']
-    cooling = (temp - ambient) * const['tire_cool_coeff'] * max(vx, 1.0)
+    heat_gen = abs(fx * slip) * const['tire_heat_coeff']  # heat generation
+    cooling = (temp - ambient) * const['tire_cool_coeff'] * max(vx, 1.0) # cooling
+
     temp += (heat_gen - cooling) * const['dt']
-    temp = np.clip(temp, ambient, const['tire_temp_max'])
+    temp = np.clip(temp, ambient, const['tire_temp_max']) # clip to realistic temps
+
     return temp
 
 
-def tire_temp_grip_factor(temp, optimal_temp):
-    """
-    Grip multiplier based on tire temperature.
-    Peaks at optimal_temp (~80°C), degrades above and below.
-    Asymmetric: cold tires lose grip gradually, hot tires degrade sharply.
-    """
+# models tire grip based on temp - peaks at optimal temp
+def tire_temp_grip_factor(temp, optimal_temp): 
     delta = temp - optimal_temp
     if delta < 0:
         # Cold: gradual loss (wider parabola)
@@ -168,14 +151,12 @@ def tire_temp_grip_factor(temp, optimal_temp):
     else:
         # Hot: sharper degradation
         factor = 1.0 - 0.0004 * delta**2
+
     return np.clip(factor, 0.4, 1.0)
 
 
-# ============================================================
-# SINGLE SESSION GENERATOR
-# ============================================================
+# generates a single session - 40000 steps
 def generate_session(session_id, steps=40000, vx_init=5.0, temp_init=30.0, ambient=25.0):
-    """Generate one driving session with full physics simulation."""
     c = CONSTANTS
 
     vx = vx_init
@@ -186,44 +167,44 @@ def generate_session(session_id, steps=40000, vx_init=5.0, temp_init=30.0, ambie
 
     data_rows = []
 
-    # Randomized physical conditions (no driver styles)
-    target_slip = np.random.uniform(0.08, 0.25)
+    # randomized physical conditions (no driver styles)
+    target_slip = np.random.uniform(0.06, 0.20)
     aggression = np.random.uniform(0.0, 1.0)
     surface_mu = c['base_friction']
 
     for i in range(steps):
         t = i * c['dt']
 
-        # Randomize conditions every ~25s segment
+        # randomize conditions every ~25s segment
         if i % 2500 == 0:
-            target_slip = np.random.uniform(0.08, 0.25)  # continuous range
+            target_slip = np.random.uniform(0.08, 0.22)  # centered on 10-15% zone
             aggression = np.random.uniform(0.0, 1.0)     # continuous aggression
-            surface_mu = np.random.uniform(1.3, 1.7)     # surface friction variation
+            surface_mu = np.random.uniform(1.4, 1.6)     # surface friction variation
 
-        # 1. Driver Input
+        # Driver Input
         tps, steer = get_driver_input(t, last_slip, target_slip, aggression)
 
-        # 2. Drivetrain
+        # Drivetrain (Modeled)
         engine_torque = tps * c['max_torque']
         net_torque = engine_torque * c['gear_ratio']
         rpm = omega * c['gear_ratio'] * 9.54
 
-        # 3. Normal load with weight transfer
+        # Normal load with weight transfer
         static_weight = (c['mass'] * 9.81) / 2
         transfer = (c['mass'] * ax_prev * c['cg_height']) / c['wheelbase']
         fz = max(static_weight + transfer, 50.0)
 
-        # 4. Slip ratio
+        # Slip ratio
         denom = max(vx, 0.5)
         raw_slip = (omega * c['wheel_radius'] - vx) / denom
         true_slip = np.clip(max(0.0, raw_slip), 0.0, 1.0)
         last_slip = true_slip
 
-        # 5. Tire temp -> grip factor (using per-segment surface friction)
+        # Tire temp -> grip factor (using per-segment surface friction)
         temp_factor = tire_temp_grip_factor(temp, c['optimal_tire_temp'])
         effective_mu = surface_mu * temp_factor
 
-        # 6. Tire force (with post-peak drop-off)
+        # Tire force (with post-peak drop-off)
         fx = magic_formula(true_slip, fz, steer, c['peak_slip_angle'], effective_mu)
 
         # 7. Vehicle dynamics integration
@@ -239,12 +220,13 @@ def generate_session(session_id, steps=40000, vx_init=5.0, temp_init=30.0, ambie
         omega = max(omega, 0.0)
         ax_prev = ax
 
-        # 8. Update tire temperature
+        # Update tire temperature
         temp = update_tire_temp(temp, fx, true_slip, vx, ambient, c)
 
-        # 9. Sensor readings (with noise)
+        # Sensor readings (with noise)
         front_wheel_speed_mps = vx + np.random.normal(0, 0.1)
 
+        # create df row + some val to model sensor noise
         row = {
             'wheel_omega': omega + np.random.normal(0, 0.5),
             'accel_x': ax + np.random.normal(0, 0.2),
@@ -261,14 +243,8 @@ def generate_session(session_id, steps=40000, vx_init=5.0, temp_init=30.0, ambie
     return pd.DataFrame(data_rows)
 
 
-# ============================================================
-# MULTI-SESSION DATASET GENERATION
-# ============================================================
+# generates full dataset over multiple sessions
 def generate_dataset(num_sessions=20, steps_per_session=40000):
-    """
-    Generate a large dataset by running multiple independent sessions
-    with randomized initial conditions, then concatenating and shuffling.
-    """
     all_sessions = []
 
     for s in range(num_sessions):
@@ -297,11 +273,8 @@ def generate_dataset(num_sessions=20, steps_per_session=40000):
 
     return df
 
-
-# ============================================================
-# MAIN
-# ============================================================
-if __name__ == "__main__":
+# main
+def main():
     print("=" * 50)
     print("GENERATING SYNTHETIC TRACTION CONTROL DATASET")
     print("=" * 50)
@@ -371,3 +344,7 @@ if __name__ == "__main__":
     plt.savefig("dataset_diagnostics_v2.5.png", dpi=150)
     plt.show()
     print("Saved diagnostic plots to dataset_diagnostics_v2.5.png")
+
+
+if __name__ == "__main__":
+    main()
