@@ -5,20 +5,21 @@ import matplotlib.pyplot as plt
 # fsae constants from research - will replace with our cars values
 CONSTANTS = {
     'dt': 0.01,
-    'mass': 280.0,            # kg
-    'wheel_radius': 0.254,    # m
-    'wheel_inertia': 0.35,    # kg-m^2
-    'cg_height': 0.28,        # m
-    'wheelbase': 1.53,        # m
-    'drag_coeff': 0.75,
-    'gear_ratio': 11.5,
-    'max_torque': 62.0,       # Nm
-    'max_brake_torque': 550.0,# Nm (unused - traction control only)
-    'peak_slip_angle': 0.12,
-    'base_friction': 1.6,
-    'drivetrain_damping': 0.8,
-    'tire_heat_coeff': 0.002,         # friction -> heat conversion (FSAE compound)
-    'tire_cool_coeff': 0.000065,        # convective cooling rate
+    'mass': 250.0,             # kg - taken from spreadsheet (with driver)
+    'wheel_radius': 0.203,     # m - taken from spreadsheet
+    'wheel_inertia': 0.25,     # kg-m^2 - total inertia of tire, rims, and other parts
+    'cg_height': 0.2957,       # m - taken from spreadsheet
+    'wheelbase': 1.53,         # m - taken from spreadsheet
+    'drag_coeff': 1.19,        # taken from spreadsheet
+    'gear_ratio': 11.5,        # based off final drive ratio (from spreadsheet), primary reduction, and selected gear ratios
+    'max_torque': 50,          # Nm - taken from spreadsheet
+    'peak_slip_angle': 0.12,   # theoretical
+    'base_friction': 1.6,      # chosen friction coef
+    'drivetrain_damping': 0.8, #common for FSAE cars
+
+    # tire temp model components
+    'tire_heat_coeff': 0.00175,         # friction -> heat conversion (FSAE compound)
+    'tire_cool_coeff': 0.000068,        # convective cooling rate
     'tire_temp_max': 130.0,            # deg C max
     'optimal_tire_temp': 87.0,         # deg C peak grip (mid-range of 82-93°C)
 }
@@ -307,7 +308,7 @@ def main():
     print(f"Tire Temp Std:   {df['tire_temp'].std():.1f}°C")
 
     # --- Save ---
-    output_file = "synthetic_dataset_v2.5.csv"
+    output_file = "synthetic_dataset_v3.csv"
     df.to_csv(output_file, index=False)
     print(f"\nSaved {total:,} samples to {output_file}")
 
@@ -341,7 +342,7 @@ def main():
     axes[2].set_ylabel("Accel X (m/s²)")
 
     plt.tight_layout()
-    plt.savefig("dataset_diagnostics_v2.5.png", dpi=150)
+    plt.savefig("dataset_diagnostics_v3.png", dpi=150)
     plt.show()
     print("Saved diagnostic plots to dataset_diagnostics_v2.5.png")
 
