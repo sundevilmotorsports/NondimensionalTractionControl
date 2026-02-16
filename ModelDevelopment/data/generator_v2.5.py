@@ -116,8 +116,8 @@ def magic_formula(slip, load, steer_angle, peak_slip, current_mu):
     # mu_peak
     mu_peak = current_mu * steer_penalty
 
-    # )
-    abs_slip = abs(slip)
+    # clips slip at 0
+    abs_slip = max(0, slip)
 
     if abs_slip < peak_slip:
         # Rising grip region
