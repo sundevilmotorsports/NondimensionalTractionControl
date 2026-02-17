@@ -1,9 +1,9 @@
 
 /**
   ******************************************************************************
-  * @file    tire_slip_network_config.h
+  * @file    network_config.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    2026-01-15T19:19:35-0700
+  * @date    2026-02-17T11:12:14-0700
   * @brief   AI Tool Automatic Code Generator for Custom Layers Implementation
   ******************************************************************************
   * @attention
@@ -17,8 +17,8 @@
   ******************************************************************************
   */
 
-#ifndef AI_TIRE_SLIP_NETWORK_CONFIG_H
-#define AI_TIRE_SLIP_NETWORK_CONFIG_H
+#ifndef AI_NETWORK_CONFIG_H
+#define AI_NETWORK_CONFIG_H
 
 #undef AI_TOOLS_VERSION_MAJOR
 #undef AI_TOOLS_VERSION_MINOR
@@ -43,4 +43,4 @@
 #define AI_TOOLS_API_VERSION_MINOR (5)
 #define AI_TOOLS_API_VERSION_MICRO (0)
 
-#endif /*AI_TIRE_SLIP_NETWORK_CONFIG_H*/
+#endif /*AI_NETWORK_CONFIG_H*/
