@@ -63,7 +63,17 @@ const osThreadAttr_t defaultTask_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
+static ai_handle tire_slip_network = AI_HANDLE_NULL;
+static ai_u8 activations[AI_TIRE_SLIP_NETWORK_DATA_ACTIVATIONS_SIZE];
 
+static ai_float in_data[AI_TIRE_SLIP_NETWORK_IN_1_SIZE];
+static ai_float out_data[AI_TIRE_SLIP_NETWORK_OUT_1_SIZE];
+
+static ai_buffer ai_input[AI_TIRE_SLIP_NETWORK_IN_NUM] = AI_TIRE_SLIP_NETWORK_IN_1_SET_VIC(in_data);
+static ai_buffer ai_output[AI_TIRE_SLIP_NETWORK_OUT_NUM] = AI_TIRE_SLIP_NETWORK_OUT_1_SET_VIC(out_data);
+
+float SCALER_MEAN[5] = {19.630303697626477, -0.0005450365189715463, 59.8901043966616, 120.48587937144882, 59.00885398270266};
+float SCALER_SCALE[5] = {8.66180044582203, 0.14460143717972843, 23.107923307685642, 57.82262435123635, 84.05533340078773};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -101,6 +111,14 @@ int main(void)
   /* MPU Configuration--------------------------------------------------------*/
   MPU_Config();
 
+  /* Enable the CPU Cache */
+
+  /* Enable I-Cache---------------------------------------------------------*/
+  SCB_EnableICache();
+
+  /* Enable D-Cache---------------------------------------------------------*/
+  SCB_EnableDCache();
+
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -127,6 +145,7 @@ int main(void)
   MX_DAC1_Init();
   MX_FDCAN2_Init();
   /* USER CODE BEGIN 2 */
+
 
   /* USER CODE END 2 */
 
@@ -200,7 +219,7 @@ void SystemClock_Config(void)
   * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
@@ -521,6 +540,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PH1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PA0 PA1 ECU_Feedback_Pin PA3
                            PA4 PA6 PA7 PA8
